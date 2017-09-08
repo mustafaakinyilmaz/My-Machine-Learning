@@ -54,7 +54,7 @@ class NARNET:
         if out_activation == 'sigmoid':
             self.out_activation = sigmoid
 
-        self.file = '/home/akinyilmaz/Desktop/Machine/forecast/' + filename + '.csv'
+        self.file = '/home/akinyilmaz/Desktop/Machine/btc_usd_forecast/' + filename + '.csv'
         self.D = numofDelayedInputs
         self.M = numofNeurons
         self.W1 = np.random.randn(self.D, self.M)
