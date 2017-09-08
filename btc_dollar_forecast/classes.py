@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # ACTIVATION FUNCTIONS
 def sigmoid(inp, deriv=False):
     fx = 1 / (1 + np.exp(-inp))
