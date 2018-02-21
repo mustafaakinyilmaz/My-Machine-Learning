@@ -95,7 +95,7 @@ neuron_out_size = 10
 
 W1 = np.random.randn(neuron_inp_size,neuron_hidden1_size)*0.01
 W2 = np.random.randn(neuron_hidden1_size,neuron_hidden2_size)*0.01
-W3 = np.random.randn(neuron_hidden2_size,neuron_out_size)
+W3 = np.random.randn(neuron_hidden2_size,neuron_out_size)*0.01
 b1 = np.random.randn(1,neuron_hidden1_size)
 b2 = np.random.randn(1,neuron_hidden2_size)
 b3 = np.random.randn(1,neuron_out_size)
