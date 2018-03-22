@@ -223,6 +223,9 @@ days = int(input("Enter how many days:"))
 
 l_i = X[-1,:].reshape(1,-1)
 
+predicted_prices = []
+day_list = []
+
 for k in range(days):
     l_i_ = min_max(l_i,min_,max_)
     l_h1 = tanh(np.dot(l_i_,W1) + b1)
@@ -231,11 +234,18 @@ for k in range(days):
     l_inp_insert = np.append(l_i,l_o)
     l_delete = np.delete(l_inp_insert,0,axis=0)
     l_i = l_delete.reshape(1,-1)
+    predicted_prices.append(l_o[0,0])
+    day_list.append(k)
 
     
 print("After "+str(days)+" days 1 btc  --- > "+str(l_o))
 
-
+plt.plot(day_list,predicted_prices,'-b',label="predicted prices")
+plt.xlabel("After days")
+plt.ylabel("Price $")
+plt.legend()
+plt.grid()
+plt.show()
 
 
 
