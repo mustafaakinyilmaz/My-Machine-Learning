@@ -45,7 +45,7 @@ def relu(inp,deriv=False):
         return fx
     
 
-def clip_gradient(delta, threshold):
+def clip(delta, threshold):
     delta[delta > threshold] = threshold
     delta[delta < -threshold] = -threshold
     return delta
@@ -141,28 +141,25 @@ for epoch in range(1,nb_epoch+1):
         #dloss = -(Y_real/(l_out+epsilon))
         
         l_out_error = (dloss*lin(s_out,deriv=True))/(l_inp.shape[0])
-        l_out_error = clip_gradient(l_out_error,20.0)
         W3_delta = learning_rate*np.dot(l_hidden2.T,l_out_error)
         b3_delta = learning_rate*np.sum(l_out_error,axis=0).reshape(1,-1)
         
         l_hidden2_error = np.dot(l_out_error,W3.T)*tanh(s_hidden2,deriv=True)
-        l_hidden2_error = clip_gradient(l_hidden2_error,20.0)
         W2_delta = learning_rate*np.dot(l_hidden1.T,l_hidden2_error)
         b2_delta = learning_rate*np.sum(l_hidden2_error,axis=0).reshape(1,-1)
         
         l_hidden1_error = np.dot(l_hidden2_error,W2.T)*tanh(s_hidden1,deriv=True)
-        l_hidden1_error = clip_gradient(l_hidden1_error,20.0)
         W1_delta = learning_rate*np.dot(l_inp.T,l_hidden1_error)
         b1_delta = learning_rate*np.sum(l_hidden1_error,axis=0).reshape(1,-1)
         
         
         
-        W3 -= W3_delta
-        b3 -= b3_delta
-        W2 -= W2_delta
-        b2 -= b2_delta
-        W1 -= W1_delta
-        b1 -= b1_delta
+        W3 -= learning_rate*clip(W3_delta,20.0)
+        b3 -= learning_rate*clip(b3_delta,20.0)
+        W2 -= learning_rate*clip(W2_delta,20.0)
+        b2 -= learning_rate*clip(b2_delta,20.0)
+        W1 -= learning_rate*clip(W1_delta,20.0)
+        b1 -= learning_rate*clip(b1_delta,20.0)
         
     
     
