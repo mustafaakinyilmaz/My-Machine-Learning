@@ -49,6 +49,12 @@ def softmax(inp,deriv=False):
     else:
         return soft
 
+    
+def clip(delta, threshold):
+    delta[delta > threshold] = threshold
+    delta[delta < -threshold] = -threshold
+    return delta
+
 
 dataset = pd.read_csv('train.csv',sep=',').values
 from sklearn.model_selection import train_test_split
@@ -96,15 +102,13 @@ neuron_out_size = 10
 W1 = np.random.randn(neuron_inp_size,neuron_hidden1_size)*0.1
 W2 = np.random.randn(neuron_hidden1_size,neuron_hidden2_size)*0.1
 W3 = np.random.randn(neuron_hidden2_size,neuron_out_size)*0.1
-b1 = np.random.randn(1,neuron_hidden1_size)
-b2 = np.random.randn(1,neuron_hidden2_size)
-b3 = np.random.randn(1,neuron_out_size)
+b1 = np.zeros(shape= (1,neuron_hidden1_size))
+b2 = np.zeros(shape= (1,neuron_hidden2_size))
+b3 = np.zeros(shape= (1,neuron_out_size))
 
 nb_epoch = 250
 batch_size = 128
 learning_rate0 = 1.e-2
-
-epsilon = 1.e-7
 
 train_accur_list = []
 test_accur_list = []
@@ -147,12 +151,12 @@ for epoch in range(1,nb_epoch+1):
         b1_delta = learning_rate*np.sum(l_hidden1_error,axis=0).reshape(1,-1)
         
         
-        W3 -= W3_delta
-        b3 -= b3_delta
-        W2 -= W2_delta
-        b2 -= b2_delta
-        W1 -= W1_delta
-        b1 -= b1_delta
+        W3 -= learning_rate*clip(W3_delta,20.0)
+        b3 -= learning_rate*clip(b3_delta,20.0)
+        W2 -= learning_rate*clip(W2_delta,20.0)
+        b2 -= learning_rate*clip(b2_delta,20.0)
+        W1 -= learning_rate*clip(W1_delta,20.0)
+        b1 -= learning_rate*clip(b1_delta,20.0)
         
     
     
