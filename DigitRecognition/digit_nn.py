@@ -26,7 +26,7 @@ def tanh(inp,deriv=False):
         return fx
     
 
-def relu(inp,deriv=False):
+def relu2(inp,deriv=False):
     k1 = 0.01
     k2 = 0.5
     up = 20
@@ -36,6 +36,15 @@ def relu(inp,deriv=False):
     fx = fxplus + fxminus
     if deriv == True:
         return (inp<up)*(inp>0)*k2 + (inp<=0)*k1
+    else:
+        return fx
+    
+def relu(inp,deriv=False):
+    fx_minus = 0.01*inp*(inp<0)
+    fx_plus = inp*(inp>=0)
+    fx = fx_minus + fx_plus
+    if deriv == True:
+        return (inp>=0)*1 + (inp<0)*0.01
     else:
         return fx
 
@@ -173,7 +182,7 @@ for epoch in range(1,nb_epoch+1):
     
     Y_hat_test = softmax(np.dot(relu(np.dot(relu(np.dot(X_test,W1)+b1),W2)+b2),W3)+b3)
     
-    test_error = np.sum(np.square(Y_hat_test-Y_test))/(np.shape(Y_test)[0]*2)
+    test_error = np.sum(np.square(Y_hat_test-Y_test))/(Y_test.shape[0]*2)
     #test_error = -np.sum(Y_test*np.log(Y_hat_test+epsilon))/(Y_test.shape[0])
     
     test_real = np.argmax(Y_test,axis=1)
