@@ -1,0 +1,10 @@
+
+
+train-test set 1, gaussian noise 1, weight init 1, batch size 128, lr: 3.e-2 ----> case1
+
+train-test set 2, gaussian noise 2, weight init 2, batch size 256, lr: 3.e-2 ----> case2
+
+train-test set 3, gaussian noise 3, weight init 3, batch size 64, lr: 3.e-2 ----> case3
+
+
+
