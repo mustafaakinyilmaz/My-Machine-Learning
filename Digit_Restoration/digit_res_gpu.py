@@ -125,7 +125,7 @@ def model(device,X_train,Y_train,X_test,Y_test,num_epoch,learning_rate,batch_siz
     total_batch = np.ceil(X_train.shape[0]/batch_size)
     total_test_batch = np.ceil(X_test.shape[0]/batch_size)
     start_time = time.time()
-    print("AKi")
+
     for epoch in range(1,num_epoch+1):     
         total_cost = 0
         total_test_cost = 0
