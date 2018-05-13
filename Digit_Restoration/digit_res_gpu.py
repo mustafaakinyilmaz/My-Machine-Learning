@@ -235,7 +235,7 @@ plt.title("Final training PSNR: "+str(train_psnr_list[24])+"\n"+
 plt.grid()
 plt.legend()
 
-test_out_n = test_out.data.numpy().astype(np.float64).reshape(-1,28,28,1)
+test_out_n = test_out.cpu().detach().numpy().astype(np.float64).reshape(-1,28,28,1)
 
 plt.imshow(test_out_n[4,:,:,0],cmap='Greys')
 plt.imshow(minibatch_test_X.reshape(-1,28,28,1)[4,:,:,0],cmap='Greys')
