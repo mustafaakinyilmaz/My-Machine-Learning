@@ -62,8 +62,6 @@ def create_datasets():
 def initialize_parameters(device):
     W1 = np.loadtxt("W1.txt").reshape(16,1,2,2)
     W2 = np.loadtxt("W2.txt").reshape(32,16,2,2)
-    #W3 = np.loadtxt("W3.txt").reshape(32,16,2,2)
-    #W4 = np.loadtxt("W4.txt").reshape(16,1,2,2)
     W3 = np.loadtxt("W3.txt").reshape(1568,1568)
     
     parameters = {
@@ -240,8 +238,3 @@ test_out_n = test_out.cpu().detach().numpy().astype(np.float64).reshape(-1,28,28
 plt.imshow(test_out_n[4,:,:,0],cmap='Greys')
 plt.imshow(minibatch_test_X.reshape(-1,28,28,1)[4,:,:,0],cmap='Greys')
 plt.imshow(minibatch_test_Y.reshape(-1,28,28,1)[4,:,:,0],cmap='Greys')
-
-
-
-plt.imshow(X_test.reshape(-1,28,28,1)[3,:,:,0],cmap='Greys')
-plt.imshow(Y_test.reshape(-1,28,28,1)[3,:,:,0],cmap='Greys')
