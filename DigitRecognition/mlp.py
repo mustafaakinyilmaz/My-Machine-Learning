@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 np.random.seed(1)
 
+# Define activation functions
 def sigmoid(inp,deriv=False):
     fx = 1.0/(1+np.exp(-inp))
     if deriv == True:
@@ -59,8 +60,8 @@ def softmax(inp,deriv=False):
 def create_dataset():
     dataset = pd.read_csv('train.csv',sep=',').values
     from sklearn.model_selection import train_test_split
+    # Randomly split dataset into train and test sets
     train_set,test_set = train_test_split(dataset,test_size=0.2)
-    #test_dataset = pd.read_csv('test.csv',sep=',').values
     
     
     train_features = train_set[:,1:]
@@ -69,12 +70,14 @@ def create_dataset():
     test_features = test_set[:,1:]
     test_results = test_set[:,0].reshape(-1,1)
     
+    # Normalize features
     train_features = train_features/255
     test_features = test_features/255
     
     from sklearn.preprocessing import OneHotEncoder
     oneEn = OneHotEncoder(categorical_features=[0])
     
+    # One hot encode digit outputs
     train_results = oneEn.fit_transform(train_results).toarray()
     test_results = oneEn.fit_transform(test_results).toarray()
     
@@ -114,12 +117,14 @@ def forward(X,parameters):
     b2 = parameters["b2"]
     b3 = parameters["b3"]
     
+    # Add two hidden layers with relu activation
     s_hidden1 = np.dot(X,W1) + b1
     l_hidden1 = relu(s_hidden1)
         
     s_hidden2 = np.dot(l_hidden1,W2) + b2
     l_hidden2 = relu(s_hidden2)
-        
+     
+    # Add a output layer    
     s_out = np.dot(l_hidden2,W3) + b3
     l_out = softmax(s_out)
     
@@ -147,7 +152,7 @@ def backprop(parameters,hiddens,activations,X,Y):
     l_hidden2 = activations["l_hidden2"]
     l_out = activations["l_out"]
 
-   
+    # Compute gradients for MSE
     dloss = l_out-Y
     
     l_out_error = (dloss*softmax(s_out,deriv=True))/(X.shape[0])
@@ -188,6 +193,7 @@ def update_parameters(parameters,deltas,learning_rate,clip_thr):
     b2_delta = deltas["b2_delta"]
     b3_delta = deltas["b3_delta"]
     
+    # Update parameters after clipping gradients in a certain range
     W3 -= learning_rate*np.clip(W3_delta,-clip_thr,clip_thr)
     W2 -= learning_rate*np.clip(W2_delta,-clip_thr,clip_thr)
     W1 -= learning_rate*np.clip(W1_delta,-clip_thr,clip_thr)
@@ -206,6 +212,7 @@ def update_parameters(parameters,deltas,learning_rate,clip_thr):
 
 
 def evaluate(parameters,X,Y):
+    # Calculate error, and correct desicion number
     _,activations = forward(X,parameters)
     Y_hat = activations["l_out"]
     error = np.sum(np.square(Y_hat-Y))/(Y.shape[0]*2)
@@ -225,6 +232,7 @@ def evaluate(parameters,X,Y):
 
 def model(X_train,Y_train,X_test,Y_test,nb_epoch,batch_size,learning_rate0):
     neuron_inp_size = np.shape(X_train)[1]
+    # Two hidden layers each having 500 neurons. It can be changed
     neuron_hidden1_size = 500
     neuron_hidden2_size = 500
     neuron_out_size = 10
@@ -236,9 +244,10 @@ def model(X_train,Y_train,X_test,Y_test,nb_epoch,batch_size,learning_rate0):
     test_accur_list = []
     test_error_list = []
     
+    # Iterations
     for epoch in range(1,nb_epoch+1): 
-        #learning_rate = learning_rate0 - (((epoch-1)**2)/(nb_epoch**2))*learning_rate0
-        learning_rate = learning_rate0
+        learning_rate = learning_rate0 - (((epoch-1)**2)/(nb_epoch**2))*learning_rate0
+        #learning_rate = learning_rate0
         for batch in range(0,np.shape(X_train)[0],batch_size):
             if np.shape(X_train)[0]-batch < batch_size:
                 l_inp = X_train[batch:,:]
@@ -278,6 +287,7 @@ def model(X_train,Y_train,X_test,Y_test,nb_epoch,batch_size,learning_rate0):
 
 X_train,Y_train,X_test,Y_test = create_dataset()
 
+# Training. nb_epoch, batch_size, and learning_rate0 are adjustable.
 parameters,epoch_list,train_accur_list,train_error_list,test_accur_list,test_error_list= model(X_train,
                                                                                                Y_train,
                                                                                                X_test,
@@ -285,7 +295,7 @@ parameters,epoch_list,train_accur_list,train_error_list,test_accur_list,test_err
                                                                                                nb_epoch=30,
                                                                                                batch_size=128,
                                                                                                learning_rate0=2.e-2)
-
+# plot iterations vs MSE
 plt.plot(epoch_list,train_error_list,label="training error")
 plt.plot(epoch_list,test_error_list,label="test error")
 plt.legend()
@@ -294,6 +304,7 @@ plt.xlabel("iterations")
 plt.ylabel("MSE")
 
 
+# plot iterations vs Accuracy
 plt.plot(epoch_list,train_accur_list,label="training accuracy")
 plt.plot(epoch_list,test_accur_list,label="test accuracy")
 plt.legend()
@@ -301,13 +312,13 @@ plt.grid()
 plt.xlabel("iterations")
 plt.ylabel("% Accuracy")
 
+# See sample predictions on test test. Change indice to change samples.
 indice = 1
 test_1 = X_test[indice,:]
 _,act = forward(test_1,parameters)
 pred = np.argmax(act["l_out"],axis=1)
 
 plt.imshow(test_1.reshape((28,28)),cmap="Greys")
-plt.title("real label: 0"+"\n"
-          "predicted label: "+str(pred[0]))
+plt.title("predicted label: "+str(pred[0]))
 
 
